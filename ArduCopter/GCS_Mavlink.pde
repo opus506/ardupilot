@@ -418,14 +418,11 @@ static void NOINLINE send_current_waypoint(mavlink_channel_t chan)
 #if CONFIG_SONAR == ENABLED
 static void NOINLINE send_rangefinder(mavlink_channel_t chan)
 {
-    // exit immediately if sonar is disabled
-    if (!sonar.healthy()) {
-        return;
-    }
+    
     mavlink_msg_rangefinder_send(
             chan,
             sonar_alt * 0.01f,
-            sonar.voltage_mv() * 0.001f);
+            payload_gauge_reading);
 }
 #endif
 
