@@ -131,3 +131,14 @@ void read_receiver_rssi(void)
         receiver_rssi = constrain_int16(ret, 0, 255);
     }
 }
+
+// read the payload gauge
+void read_payload_sensor(void)
+{
+    if (g.ch7_option == AUX_SWITCH_PAYLOAD){
+        payload_gauge->set_pin(g.payload_gauge_pin);
+        payload_gauge_reading = payload_gauge->voltage_average();
+    } else {
+        payload_gauge_reading = 0;
+    }
+}

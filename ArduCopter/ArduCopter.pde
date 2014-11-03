@@ -414,8 +414,9 @@ static AP_BoardConfig BoardConfig;
 // receiver RSSI
 static uint8_t receiver_rssi;
 
-//
+// payload gauge
 static bool payload_control_enable;
+static float payload_gauge_reading;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Failsafe
@@ -830,6 +831,7 @@ static const AP_Scheduler::Task scheduler_tasks[] PROGMEM = {
     { fifty_hz_logging_loop, 8,     22 },
     { perf_update,        4000,     20 },
     { read_receiver_rssi,   40,      5 },
+    { read_payload_sensor,  40,      5 },
 #if FRSKY_TELEM_ENABLED == ENABLED
     { telemetry_send,       80,     10 },	
 #endif
