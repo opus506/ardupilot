@@ -207,6 +207,18 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Description: This selects an analog pin for the payload sensor voltage.
     // @User: Standard
     GSCALAR(payload_gauge_pin,            "PAYLOAD_PIN",         -1),
+    
+    // @Param: PAYLOAD_BIAS_V
+    // @DisplayName: Payload sensing bias voltage (center point)
+    // @Description: This sets the center point of the payload gauge bias.
+    // @User: Standard
+    GSCALAR(payload_bias_voltage,            "PAYLOAD_BIAS_V",         2.5),
+    
+    // @Param: PAYLOAD_GAIN
+    // @DisplayName: Payload sensing bias gain to climb rate
+    // @Description: This sets the gain of the bias voltage to climb rate
+    // @User: Standard
+    GSCALAR(payload_bias_gain,            "PAYLOAD_GAIN",         200),
 
     // @Param: WP_YAW_BEHAVIOR
     // @DisplayName: Yaw behaviour during missions
