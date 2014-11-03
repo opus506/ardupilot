@@ -695,6 +695,9 @@ static AP_ServoRelayEvents ServoRelayEvents(relay);
 // a pin for reading the receiver RSSI voltage.
 static AP_HAL::AnalogSource* rssi_analog_source;
 
+// a pin for reading the payload gauge.
+static AP_HAL::AnalogSource* payload_gauge;
+
 #if CLI_ENABLED == ENABLED
     static int8_t   setup_show (uint8_t argc, const Menu::arg *argv);
 #endif
