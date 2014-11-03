@@ -147,6 +147,8 @@ static void init_ardupilot()
     battery.init();
     
     rssi_analog_source      = hal.analogin->channel(g.rssi_pin);
+    
+    payload_gauge           = hal.analogin->channel(g.payload_gauge_pin);
 
     barometer.init();
 
