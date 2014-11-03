@@ -219,6 +219,12 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Description: This sets the gain of the bias voltage to climb rate
     // @User: Standard
     GSCALAR(payload_bias_gain,            "PAYLOAD_GAIN",         200),
+    
+    // @Param: PAYLOAD_LPF_HZ
+    // @DisplayName: Payload sensing low-pass filter cutoff frequency
+    // @Description: This sets the cutoff frequency of the payload LPF. Only changes on reboot.
+    // @User: Standard
+    GSCALAR(payload_filter_hz,            "PAYLOAD_LPF_HZ",         10.0),
 
     // @Param: WP_YAW_BEHAVIOR
     // @DisplayName: Yaw behaviour during missions

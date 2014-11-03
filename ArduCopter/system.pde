@@ -149,6 +149,7 @@ static void init_ardupilot()
     rssi_analog_source      = hal.analogin->channel(g.rssi_pin);
     
     payload_gauge           = hal.analogin->channel(g.payload_gauge_pin);
+    payload_gauge_filter.set_cutoff_frequency(0.02, g.payload_filter_hz);
 
     barometer.init();
 

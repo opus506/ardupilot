@@ -134,10 +134,12 @@ void read_receiver_rssi(void)
 
 // read the payload gauge
 void read_payload_sensor(void)
-{
+{    
     if (g.ch7_option == AUX_SWITCH_PAYLOAD){
         payload_gauge->set_pin(g.payload_gauge_pin);
-        payload_gauge_reading = payload_gauge->voltage_average();
+        float new_reading = payload_gauge->voltage_average();
+        new_reading = constrain_float(new_reading, 1.0, 4.0);
+        payload_gauge_reading = payload_gauge_filter.apply(new_reading);
         payload_climb_rate_bias = (payload_gauge_reading - g.payload_bias_voltage)*g.payload_bias_gain;
     } else {
         payload_gauge_reading = 0;

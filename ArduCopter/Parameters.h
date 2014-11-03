@@ -127,6 +127,7 @@ public:
         k_param_payload_gauge_pin,      // 61
         k_param_payload_bias_voltage,
         k_param_payload_bias_gain,      // 63
+        k_param_payload_filter_hz,      // 64
 
         // 65: AP_Limits Library
         k_param_limits = 65,            // deprecated - remove
@@ -359,6 +360,7 @@ public:
     AP_Int8         payload_gauge_pin;
     AP_Float        payload_bias_voltage;
     AP_Float        payload_bias_gain;
+    AP_Float        payload_filter_hz;
     
     // Waypoints
     //
