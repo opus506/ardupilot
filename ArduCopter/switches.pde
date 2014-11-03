@@ -449,7 +449,12 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
         break;
         
     case AUX_SWITCH_PAYLOAD:
-        payload_control_enable = ch_flag;
+        
+        if (ch_flag == AUX_SWITCH_HIGH){
+            payload_control_enable = true;
+        } else {
+            payload_control_enable = false;
+        }
         break;
         
     }
