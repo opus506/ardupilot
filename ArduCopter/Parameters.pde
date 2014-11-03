@@ -192,6 +192,7 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Values: -1:Disabled, 0:APM2 A0, 1:APM2 A1, 2:APM2 A2, 13:APM2 A13, 103:Pixhawk SBUS
     // @User: Standard
     GSCALAR(rssi_pin,            "RSSI_PIN",         -1),
+    
 
     // @Param: RSSI_RANGE
     // @DisplayName: Receiver RSSI voltage range
@@ -200,6 +201,12 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Values: 3.3:3.3V, 5.0:5V
     // @User: Standard
     GSCALAR(rssi_range,          "RSSI_RANGE",         5.0),
+    
+    // @Param: PAYLOAD_GAUGE_PIN
+    // @DisplayName: Payload sensing pin
+    // @Description: This selects an analog pin for the payload sensor voltage.
+    // @User: Standard
+    GSCALAR(payload_gauge_pin,            "PAYLOAD_PIN",         -1),
 
     // @Param: WP_YAW_BEHAVIOR
     // @DisplayName: Yaw behaviour during missions
