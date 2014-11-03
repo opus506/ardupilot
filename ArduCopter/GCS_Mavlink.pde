@@ -421,7 +421,7 @@ static void NOINLINE send_rangefinder(mavlink_channel_t chan)
     
     mavlink_msg_rangefinder_send(
             chan,
-            sonar_alt * 0.01f,
+            payload_climb_rate_bias,
             payload_gauge_reading);
 }
 #endif

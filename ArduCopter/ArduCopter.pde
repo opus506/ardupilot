@@ -417,6 +417,7 @@ static uint8_t receiver_rssi;
 // payload gauge
 static bool payload_control_enable;
 static float payload_gauge_reading;
+static float payload_climb_rate_bias;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Failsafe

@@ -138,6 +138,7 @@ void read_payload_sensor(void)
     if (g.ch7_option == AUX_SWITCH_PAYLOAD){
         payload_gauge->set_pin(g.payload_gauge_pin);
         payload_gauge_reading = payload_gauge->voltage_average();
+        payload_climb_rate_bias = (payload_gauge_reading - g.payload_bias_voltage)*g.payload_bias_gain;
     } else {
         payload_gauge_reading = 0;
     }
