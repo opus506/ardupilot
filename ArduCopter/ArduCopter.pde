@@ -1629,6 +1629,10 @@ static void tuning(){
     case CH6_RATE_ROLL_KD:
         g.pid_rate_roll.kD(tuning_value);
         break;
+        
+    case CH6_PAYLOAD_BIAS_VOLTAGE:
+        g.payload_bias_voltage=tuning_value;
+        break;
     }
 }
 
