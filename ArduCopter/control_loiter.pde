@@ -55,6 +55,11 @@ static void loiter_run()
 
         // get pilot desired climb rate
         target_climb_rate = get_pilot_desired_climb_rate(g.rc_3.control_in);
+        
+        // bias climb rate according to payload feedback
+        if (!ap.land_complete && payload_control_enable){
+            target_climb_rate += payload_climb_rate_bias;
+        }
 
         // check for pilot requested take-off
         if (ap.land_complete && target_climb_rate > 0) {

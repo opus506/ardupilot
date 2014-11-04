@@ -415,7 +415,7 @@ static AP_BoardConfig BoardConfig;
 static uint8_t receiver_rssi;
 
 // payload gauge
-static bool payload_control_enable;
+static bool payload_control_enable = false;
 static float payload_gauge_reading;
 static float payload_climb_rate_bias;
 LowPassFilterFloat payload_gauge_filter;
