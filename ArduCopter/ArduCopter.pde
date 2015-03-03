@@ -145,6 +145,7 @@
 #include <AP_RCMapper.h>        // RC input mapping library
 #include <AP_Notify.h>          // Notify library
 #include <AP_BattMonitor.h>     // Battery monitor library
+#include <AP_MotorManagement.h> // Motor Management library
 #include <AP_BoardConfig.h>     // board configuration library
 #include <AP_Frsky_Telem.h>
 #if SPRAYER == ENABLED
@@ -542,6 +543,8 @@ static Vector3f flip_orig_attitude;         // original copter attitude before f
 // Battery Sensors
 ////////////////////////////////////////////////////////////////////////////////
 static AP_BattMonitor battery;
+
+static AP_MotorManagement motor_manager;
 
 ////////////////////////////////////////////////////////////////////////////////
 // FrSky telemetry support
