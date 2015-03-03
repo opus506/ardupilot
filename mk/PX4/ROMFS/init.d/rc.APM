@@ -405,6 +405,12 @@ then
     echo "Found batt_smbus"
 fi
 
+# optional motor management
+if motor_management -b 2 start
+then
+    echo "Found motor_management"
+fi
+
 # optional oreo leds
 if oreoled start
 then
