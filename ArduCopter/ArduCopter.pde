@@ -1,6 +1,6 @@
 /// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 
-#define THISFIRMWARE "ArduCopter V3.3-dev"
+#define THISFIRMWARE "ArduCopter V3.3-MMdev"
 /*
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -755,6 +755,7 @@ static const AP_Scheduler::Task scheduler_tasks[] PROGMEM = {
     { update_optical_flow,   2,     20 },
 #endif
     { update_batt_compass,  40,     72 },
+    { read_motor_management,20,      5 },
     { read_aux_switches,    40,      5 },
     { arm_motors_check,     40,      1 },
     { auto_trim,            40,     14 },

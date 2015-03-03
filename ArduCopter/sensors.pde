@@ -139,6 +139,13 @@ static void update_optical_flow(void)
 }
 #endif  // OPTFLOW == ENABLED
 
+// read_motor_management
+// called at 20hz
+static void read_motor_management(void)
+{
+    motor_manager.read();
+}
+
 // read_battery - check battery voltage and current and invoke failsafe if necessary
 // called at 10hz
 static void read_battery(void)
