@@ -23,6 +23,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #include <drivers/drv_motor_management.h>
 #include <uORB/topics/motor_management.h>
@@ -39,6 +40,7 @@ AP_MotorManagement::AP_MotorManagement()
 // read - read latest voltage and current
 void AP_MotorManagement::read()
 {
+
     bool updated = false;
     struct motor_management_s mm_status;
 
@@ -47,8 +49,15 @@ void AP_MotorManagement::read()
 
     // retrieve latest info
     if (updated) {
+        //::printf("Motor Manager is updated /n");
         if (OK == orb_copy(ORB_ID(motor_management), _motor_manager_sub, &mm_status)) {
             _ppm1 = mm_status.ppm_1;
+            _temp1 = mm_status.temp_1;
+            //::printf("Motor Manager update is OK /n");
+        } else {
+            //::printf("Motor Manager update is NOT OK /n");
         }
+    } else {
+        //::printf("Motor Manager is NOT updated /n");
     }
 }

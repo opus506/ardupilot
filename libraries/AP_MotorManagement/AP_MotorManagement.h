@@ -27,16 +27,17 @@ class AP_MotorManagement {
     public:
         // Methods
         AP_MotorManagement();               // Constructor
-        float get_ppm(){return _ppm1;}      // Returns first ppm
+        float get_ppm1(){return _ppm1;}     // Returns first ppm
+        float get_temp1(){return _temp1;}   // Returns first temperature
 
-    //private:
+    private:
         // Methods
         void read();
 
         // Members
     int         _motor_manager_sub;         // orb subscription description
-    uint64_t    _last_timestamp;            // time of last update (used to avoid processing old reports)
     float       _ppm1;                      // ppm of channel 1
+    float       _temp1;                     // temp of channel 1
 };
 
 #endif // AP_MOTORMANAGEMENT_H

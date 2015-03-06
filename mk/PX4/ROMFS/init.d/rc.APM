@@ -406,9 +406,9 @@ then
 fi
 
 # optional motor management
-if motor_management -b 2 start
+if motor_management start
 then
-    echo "Found motor_management"
+    echo "motor management started OK"
 fi
 
 # optional oreo leds
