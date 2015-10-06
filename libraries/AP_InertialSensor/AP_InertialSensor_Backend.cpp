@@ -34,7 +34,12 @@ void AP_InertialSensor_Backend::_rotate_and_correct_gyro(uint8_t instance, Vecto
 {
     // gyro calibration is always assumed to have been done in sensor frame
     gyro -= _imu._gyro_offset[instance];
+    
+    // hack to fix hardware problem on ODG Coax
+    gyro.rotate(ROTATION_YAW_270);
+    
     gyro.rotate(_imu._board_orientation);
+
 }
 
 void AP_InertialSensor_Backend::_publish_delta_angle(uint8_t instance, const Vector3f &delta_angle)
