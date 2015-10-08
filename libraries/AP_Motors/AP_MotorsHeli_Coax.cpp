@@ -285,18 +285,10 @@ void AP_MotorsHeli_Coax::move_actuators(int16_t roll_out, int16_t pitch_out, int
     _ccw_rotor_output = throttle_out + yaw_out;
 
     // constrain collective input
-    _collective_out = _collective_setpoint;
-    if (_collective_out <= 0) {
-        _collective_out = 0;
-        limit.throttle_lower = true;
-    }
-    if (_collective_out >= 1000) {
-        _collective_out = 1000;
-        limit.throttle_upper = true;
-    }
-
+    _collective_out = throttle_out;
+ 
     // scale collective pitch
-    coll_out_scaled = _collective_out * _collective_scalar + _collective_min - 1000;
+    coll_out_scaled = _collective_setpoint * _collective_scalar + _collective_min - 1000;
 
     // swashplate servos
     _swash_servo_1.servo_out = (_rollFactor[CH_1] * roll_out + _pitchFactor[CH_1] * pitch_out)/10 + _collectiveFactor[CH_1] * coll_out_scaled + (_swash_servo_1.radio_trim-1500);
