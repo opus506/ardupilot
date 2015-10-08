@@ -18,8 +18,8 @@
 #define AP_MOTORS_HELI_COAX_SERVO3_POS                      180
 
 // coax motor output default channels
-#define AP_MOTORS_HELI_COAX_CCW_ROTOR                       CH_7
-#define AP_MOTORS_HELI_COAX_CW_ROTOR                        CH_8
+#define AP_MOTORS_HELI_COAX_CCW_ROTOR                       CH_8
+#define AP_MOTORS_HELI_COAX_CW_ROTOR                        CH_7
 
 #define AP_MOTORS_HELI_COLLECTIVE_SETPOINT                  500
 
