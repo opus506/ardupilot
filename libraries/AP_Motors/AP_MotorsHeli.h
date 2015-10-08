@@ -162,6 +162,10 @@ public:
 
     // reset_radio_passthrough used to reset all radio inputs to center
     void reset_radio_passthrough();
+    
+    // ext_gyro_gain - gets and sets external gyro gain as a pwm (1000~2000)
+    virtual int16_t ext_gyro_gain() const { return 0; }
+    virtual void ext_gyro_gain(int16_t pwm) {};
 
     // output - sends commands to the motors
     void    output();
