@@ -67,6 +67,14 @@ const AP_Param::GroupInfo AP_MotorsHeli_Coax::var_info[] PROGMEM = {
     // @User: Standard
     AP_GROUPINFO("COL_SETPOINT", 5, AP_MotorsHeli_Coax,  _collective_setpoint, AP_MOTORS_HELI_COLLECTIVE_SETPOINT),
 
+    // @Param: THROTTLE_IDLE
+    // @DisplayName: Idle Throttle Setpoint
+    // @Description: Minimum throttle output when rotors are engaged
+    // @Range: 0 500
+    // @Increment 10
+    // @User: Standard
+    AP_GROUPINFO("THROTTLE_IDLE", 6, AP_MotorsHeli_Coax, _throttle_idle, AP_MOTORS_HELI_COAX_THROTTLE_IDLE_DEFAULT),
+
     AP_GROUPEND
 };
 
@@ -165,6 +173,7 @@ void AP_MotorsHeli_Coax::calculate_scalars()
     _roll_scaler = (float)_roll_max/4500.0f;
     _pitch_scaler = (float)_pitch_max/4500.0f;
     _collective_scalar = ((float)(_collective_max-_collective_min))/1000.0f;
+    _throttle_scalar = ((float)(1000-_throttle_idle))/1000.0f;
 
     // calculate factors based on swash type and servo position
     calculate_roll_pitch_collective_factors();
@@ -221,6 +230,7 @@ void AP_MotorsHeli_Coax::move_actuators(int16_t roll_out, int16_t pitch_out, int
     int16_t coll_out_scaled = 0;
     int16_t cw_headroom = 0;
     int16_t ccw_headroom = 0;
+    int16_t throttle_out_scaled = 0;
 
     // initialize limits flag
     limit.roll_pitch = false;
@@ -254,7 +264,9 @@ void AP_MotorsHeli_Coax::move_actuators(int16_t roll_out, int16_t pitch_out, int
         limit.roll_pitch = true;
     }
 
-    if (throttle_out < 200){
+    throttle_out_scaled = throttle_out * _throttle_scalar + _throttle_idle;
+
+    if (throttle_out_scaled < 200){
             yaw_out = 0;
             limit.yaw = true;
     } else {
@@ -270,22 +282,22 @@ void AP_MotorsHeli_Coax::move_actuators(int16_t roll_out, int16_t pitch_out, int
         }
     }
 
-    cw_headroom = 1000 - (throttle_out - yaw_out);
-    ccw_headroom = 1000 - (throttle_out + yaw_out);
+    cw_headroom = 1000 - (throttle_out_scaled - yaw_out);
+    ccw_headroom = 1000 - (throttle_out_scaled + yaw_out);
 
     if (cw_headroom < 1){
-        throttle_out += cw_headroom;
+        throttle_out_scaled += cw_headroom;
         limit.throttle_upper = true;
     } else if (ccw_headroom <1){
-        throttle_out += ccw_headroom;
+        throttle_out_scaled += ccw_headroom;
         limit.throttle_upper = true;
     }
 
-    _cw_rotor_output = throttle_out - yaw_out;
-    _ccw_rotor_output = throttle_out + yaw_out;
+    _cw_rotor_output = throttle_out_scaled - yaw_out;
+    _ccw_rotor_output = throttle_out_scaled + yaw_out;
 
     // constrain collective input
-    _collective_out = throttle_out;
+    _collective_out = throttle_out_scaled;
  
     // scale collective pitch
     coll_out_scaled = _collective_setpoint * _collective_scalar + _collective_min - 1000;

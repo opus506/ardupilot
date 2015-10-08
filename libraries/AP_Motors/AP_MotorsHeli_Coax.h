@@ -22,6 +22,7 @@
 #define AP_MOTORS_HELI_COAX_CW_ROTOR                        CH_7
 
 #define AP_MOTORS_HELI_COLLECTIVE_SETPOINT                  500
+#define AP_MOTORS_HELI_COAX_THROTTLE_IDLE_DEFAULT           200
 
 // rotor controller states
 #define ROTOR_CONTROL_STOP                      0
@@ -111,6 +112,7 @@ protected:
     // internal variables
     int16_t         _ccw_rotor_output;          // output to be sent to ccw rotor
     int16_t         _cw_rotor_output;           // outptut to be sent to cw rotor
+    float           _throttle_scalar;           // scalar used to rescale throttle input to account for throttle_idle
 
     // external objects we depend upon
     RC_Channel&     _ccw_rotor;                 // output to counter-clock-wise rotating rotor (ch7)
@@ -125,6 +127,7 @@ protected:
     AP_Int16        _servo3_pos;                // Angular location of swash servo #3    
     AP_Int16        _phase_angle;               // Phase angle correction for rotor head.  If pitching the swash forward induces a roll, this can be correct the problem
     AP_Int16        _collective_setpoint;       // Swash servo position for fixed collective pitch
+    AP_Float        _throttle_idle;             // minimum throttle output when rotor control engaged
     
 };
 
