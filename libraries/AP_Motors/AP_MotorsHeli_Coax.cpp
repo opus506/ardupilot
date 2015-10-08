@@ -211,14 +211,16 @@ void AP_MotorsHeli_Coax::set_delta_phase_angle(int16_t angle)
 //
 // move_actuators - moves swash plate and tail rotor
 //                 - expected ranges:
-//                       roll : -4500 ~ 4500
-//                       pitch: -4500 ~ 4500
-//                       collective: 0 ~ 1000
-//                       yaw:   -4500 ~ 4500
+//                       roll :     -4500 ~ 4500
+//                       pitch:     -4500 ~ 4500
+//                       throttle:  0 ~ 1000
+//                       yaw:       -4500 ~ 4500
 //
 void AP_MotorsHeli_Coax::move_actuators(int16_t roll_out, int16_t pitch_out, int16_t throttle_out, int16_t yaw_out)
 {
-    int16_t coll_out_scaled;
+    int16_t coll_out_scaled = 0;
+    int16_t cw_headroom = 0;
+    int16_t ccw_headroom = 0;
 
     // initialize limits flag
     limit.roll_pitch = false;
@@ -268,6 +270,20 @@ void AP_MotorsHeli_Coax::move_actuators(int16_t roll_out, int16_t pitch_out, int
         }
     }
 
+    cw_headroom = 1000 - (throttle_out - yaw_out);
+    ccw_headroom = 1000 - (throttle_out + yaw_out);
+
+    if (cw_headroom < 1){
+        throttle_out += cw_headroom;
+        limit.throttle_upper = true;
+    } else if (ccw_headroom <1){
+        throttle_out += ccw_headroom;
+        limit.throttle_upper = true;
+    }
+
+    _cw_rotor_output = throttle_out - yaw_out;
+    _ccw_rotor_output = throttle_out + yaw_out;
+
     // constrain collective input
     _collective_out = _collective_setpoint;
     if (_collective_out <= 0) {
@@ -281,9 +297,6 @@ void AP_MotorsHeli_Coax::move_actuators(int16_t roll_out, int16_t pitch_out, int
 
     // scale collective pitch
     coll_out_scaled = _collective_out * _collective_scalar + _collective_min - 1000;
-
-    _cw_rotor_output = throttle_out - yaw_out;
-    _ccw_rotor_output = throttle_out + yaw_out;
 
     // swashplate servos
     _swash_servo_1.servo_out = (_rollFactor[CH_1] * roll_out + _pitchFactor[CH_1] * pitch_out)/10 + _collectiveFactor[CH_1] * coll_out_scaled + (_swash_servo_1.radio_trim-1500);
