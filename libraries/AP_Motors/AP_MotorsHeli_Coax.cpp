@@ -344,4 +344,7 @@ void AP_MotorsHeli_Coax::update_motor_control(uint8_t state)
     _cw_rotor.servo_out = _cw_rotor_output;
     _cw_rotor.calc_pwm();
     hal.rcout->write(AP_MOTORS_HELI_COAX_CW_ROTOR, _cw_rotor.radio_out);
+
+    // Check if both rotors are run-up
+    _heliflags.rotor_runup_complete = ((_ccw_rotor.servo_out >= _throttle_idle) && (_cw_rotor.servo_out >= _throttle_idle));
 }
