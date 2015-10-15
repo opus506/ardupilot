@@ -282,8 +282,8 @@ void AP_MotorsHeli_Coax::move_actuators(int16_t roll_out, int16_t pitch_out, int
         }
     }
 
-    cw_headroom = 1000 - (throttle_out_scaled - yaw_out);
-    ccw_headroom = 1000 - (throttle_out_scaled + yaw_out);
+    cw_headroom = YAW_HEADROOM_MAX - (throttle_out_scaled - yaw_out);
+    ccw_headroom = YAW_HEADROOM_MAX - (throttle_out_scaled + yaw_out);
 
     if (cw_headroom < 1){
         throttle_out_scaled += cw_headroom;

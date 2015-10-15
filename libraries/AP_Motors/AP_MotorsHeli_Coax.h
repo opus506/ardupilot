@@ -24,6 +24,8 @@
 #define AP_MOTORS_HELI_COLLECTIVE_SETPOINT                  500
 #define AP_MOTORS_HELI_COAX_THROTTLE_IDLE_DEFAULT           200
 
+#define YAW_HEADROOM_MAX                                    900
+
 // rotor controller states
 #define ROTOR_CONTROL_STOP                      0
 #define ROTOR_CONTROL_IDLE                      1
