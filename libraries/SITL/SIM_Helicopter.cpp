@@ -26,7 +26,10 @@ namespace SITL {
 Helicopter::Helicopter(const char *home_str, const char *frame_str) :
     Aircraft(home_str, frame_str)
 {
-    mass = 2.13f;
+    mass = 7.25f;               // Kg
+    frame_height = 0.2;         // Meter
+    gear_ratio = 115/17;        // 115 tooth spur gear, 17 tooth pinion
+    rotor_moment_inertia = 0.5 * rotor_mass * pow((rotor_diameter/2), 2.0);
 
     /*
        scaling from motor power to Newtons. Allows the copter
@@ -36,8 +39,6 @@ Helicopter::Helicopter(const char *home_str, const char *frame_str) :
 
     // calculate lateral thrust ratio for tail rotor
     tail_thrust_scale = sinf(radians(hover_lean)) * thrust_scale / yaw_zero;
-
-    frame_height = 0.1;
 
     if (strstr(frame_str, "-dual")) {
         frame_type = HELI_FRAME_DUAL;
