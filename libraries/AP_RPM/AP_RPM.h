@@ -77,6 +77,8 @@ public:
 
     bool healthy(uint8_t instance) const;
 
+    bool activated(uint8_t instance) const;
+
 private:
     RPM_State state[RPM_MAX_INSTANCES];
     AP_RPM_Backend *drivers[RPM_MAX_INSTANCES];

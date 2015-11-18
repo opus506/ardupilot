@@ -123,3 +123,18 @@ bool AP_RPM::healthy(uint8_t instance) const
     }
     return true;
 }
+
+/*
+  check if an instance is activated
+ */
+bool AP_RPM::activated(uint8_t instance) const
+{
+    if (instance >= num_instances) {
+        return false;
+    }
+    // assume we get readings at at least 1Hz
+    if (_type[instance] == RPM_TYPE_NONE) {
+        return false;
+    }
+    return true;
+}
