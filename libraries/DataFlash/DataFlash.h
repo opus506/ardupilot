@@ -607,6 +607,8 @@ struct PACKED log_RPM {
     uint64_t time_us;
     float rpm1;
     float rpm2;
+    float sigq1;
+    float sigq2;
 };
 
 /*
@@ -762,7 +764,7 @@ Format characters in the format string for binary log messages
     { LOG_ORGN_MSG, sizeof(log_ORGN), \
       "ORGN","QBLLe","TimeUS,Type,Lat,Lng,Alt" }, \
     { LOG_RPM_MSG, sizeof(log_RPM), \
-      "RPM",  "Qff", "TimeUS,rpm1,rpm2" }
+      "RPM",  "Qffff", "TimeUS,rpm1,rpm2,sigq1,sigq2" }
 
 #if HAL_CPU_CLASS >= HAL_CPU_CLASS_75
 #define LOG_COMMON_STRUCTURES LOG_BASE_STRUCTURES, LOG_EXTRA_STRUCTURES

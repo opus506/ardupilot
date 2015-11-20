@@ -1500,7 +1500,9 @@ void DataFlash_Class::Log_Write_RPM(const AP_RPM &rpm_sensor)
         LOG_PACKET_HEADER_INIT(LOG_RPM_MSG),
         time_us     : hal.scheduler->micros64(),
         rpm1        : rpm_sensor.get_rpm(0),
-        rpm2        : rpm_sensor.get_rpm(1)
+        rpm2        : rpm_sensor.get_rpm(1),
+        sigq1       : rpm_sensor.get_signal_quality(0),
+        sigq2       : rpm_sensor.get_signal_quality(1)
     };
     WriteBlock(&pkt, sizeof(pkt));
 }
