@@ -39,6 +39,12 @@ const AP_Param::GroupInfo AP_RPM::var_info[] PROGMEM = {
     // @Increment: 1
     AP_GROUPINFO("_MAX", 2, AP_RPM, _maximum[0], 0),
 
+    // @Param: _MIN
+    // @DisplayName: Minimum RPM
+    // @Description: Minimum RPM to report
+    // @Increment: 1
+    AP_GROUPINFO("_MIN", 3, AP_RPM, _minimum[0], 0),
+
 #if RPM_MAX_INSTANCES > 1
     // @Param: 2_TYPE
     // @DisplayName: Second RPM type
