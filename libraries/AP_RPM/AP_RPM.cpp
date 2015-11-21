@@ -45,6 +45,12 @@ const AP_Param::GroupInfo AP_RPM::var_info[] PROGMEM = {
     // @Increment: 1
     AP_GROUPINFO("_MIN", 3, AP_RPM, _minimum[0], 0),
 
+    // @Param: _MIN_QUAL
+    // @DisplayName: Minimum Quality
+    // @Description: Minimum data quality to be used
+    // @Increment: 0.1
+    AP_GROUPINFO("_MIN_QUAL", 4, AP_RPM, _quality_min[0], 0.5),
+
 #if RPM_MAX_INSTANCES > 1
     // @Param: 2_TYPE
     // @DisplayName: Second RPM type
@@ -127,6 +133,12 @@ bool AP_RPM::healthy(uint8_t instance) const
     if (hal.scheduler->millis() - state[instance].last_reading_ms > 1000) {
         return false;
     }
+
+    // check that data quality is above minimum required
+    if (state[instance].signal_quality < _quality_min[0]) {
+        return false;
+    }
+
     return true;
 }
 
