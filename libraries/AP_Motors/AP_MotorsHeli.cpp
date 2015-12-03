@@ -65,7 +65,7 @@ const AP_Param::GroupInfo AP_MotorsHeli::var_info[] PROGMEM = {
     // @User: Standard
     AP_GROUPINFO("SV_MAN",  6, AP_MotorsHeli, _servo_mode, SERVO_CONTROL_MODE_AUTOMATED),
 
-    // @Param: GOV_SETPOINT
+    // @Param: RSC_SETPOINT
     // @DisplayName: External Motor Governor Setpoint
     // @Description: PWM passed to the external motor governor when external governor is enabled
     // @Range: 0 1000
@@ -77,7 +77,7 @@ const AP_Param::GroupInfo AP_MotorsHeli::var_info[] PROGMEM = {
     // @Param: RSC_MODE
     // @DisplayName: Rotor Speed Control Mode
     // @Description: Determines the method of rotor speed control
-    // @Values: 1:Ch8 Input, 2:SetPoint, 3:Throttle Curve
+    // @Values: 1:Ch8 Input, 2:SetPoint, 3:Throttle Curve, 4:Internal Governor
     // @User: Standard
     AP_GROUPINFO("RSC_MODE", 8, AP_MotorsHeli, _rsc_mode, AP_MOTORS_HELI_RSC_MODE_CH8_PASSTHROUGH),
 
@@ -154,6 +154,15 @@ const AP_Param::GroupInfo AP_MotorsHeli::var_info[] PROGMEM = {
     // @Increment: 1
     // @User: Standard
     AP_GROUPINFO("SV_TEST",  17, AP_MotorsHeli, _servo_test, 0),
+
+    // @Param: RSC_GOV_RPM
+    // @DisplayName: Rotor Speed Controller Governor RPM Setpoint
+    // @Description: Target RPM for internal rotor speed governor when motor is engaged
+    // @Range: 500 4000
+    // @Units: RPM
+    // @Increment: 10
+    // @User: Standard
+    AP_GROUPINFO("RSC_GOV_RPM", 18, AP_MotorsHeli, _rsc_gov_rpm_setpoint, AP_MOTORS_HELI_RSC_GOV_RPM_SETPOINT),
 
     AP_GROUPEND
 };
@@ -322,7 +331,7 @@ bool AP_MotorsHeli::parameter_check() const
     }
 
     // returns false if RSC Mode is not set to a valid control mode
-    if (_rsc_mode <= AP_MOTORS_HELI_RSC_MODE_DISABLED || _rsc_mode > AP_MOTORS_HELI_RSC_MODE_THROTTLE_CURVE) {
+    if (_rsc_mode <= AP_MOTORS_HELI_RSC_MODE_DISABLED || _rsc_mode > AP_MOTORS_HELI_RSC_MODE_GOVERNOR) {
         return false;
     }
 
