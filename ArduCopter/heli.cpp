@@ -188,6 +188,20 @@ void Copter::heli_update_rotor_speed_targets()
                 motors.set_desired_rotor_speed(0);
             }
             break;
+        case AP_MOTORS_HELI_RSC_MODE_GOVERNOR:
+            // pass setpoint through as desired rotor speed
+            if (rsc_control_deglitched > 0) {
+                motors.set_interlock(true);
+                if ((rpm_sensor.get_rpm(0) > 0) && ((heli_flags.using_governor_switch && heli_flags.governor_enable) || !heli_flags.using_governor_switch)){
+                    motors.set_rsc_governor_enabled(true, motors.get_gov_rpm_setpoint(), rpm_sensor.get_rpm(0));
+                } else {
+                    motors.set_rsc_governor_enabled(false, motors.get_gov_rpm_setpoint(), 0);
+                }
+            }else{
+                motors.set_interlock(false);
+                motors.set_rsc_governor_enabled(false, 0, 0);
+            }
+            break;
     }
 
     // when rotor_runup_complete changes to true, log event
@@ -203,6 +217,13 @@ void Copter::heli_update_rotor_speed_targets()
 void Copter::heli_radio_passthrough()
 {
     motors.set_radio_passthrough(channel_roll->control_in, channel_pitch->control_in, channel_throttle->control_in, channel_yaw->control_in);
+}
+
+void Copter::set_using_governor_switch(bool b)
+{
+    if(heli_flags.using_governor_switch != b) {
+        heli_flags.using_governor_switch = b;
+    }
 }
 
 #endif  // FRAME_CONFIG == HELI_FRAME

@@ -344,6 +344,7 @@ public:
         k_param_rtl_climb_min,
         k_param_rpm_sensor,
         k_param_autotune_min_d, // 251
+        k_param_pid_rotor_gov,
 
         // 254,255: reserved
     };
@@ -485,6 +486,7 @@ public:
     AC_HELI_PID             pid_rate_roll;
     AC_HELI_PID             pid_rate_pitch;
     AC_HELI_PID             pid_rate_yaw;
+    AC_PID                  pid_rotor_gov;
 #else
     AC_PID                  pid_rate_roll;
     AC_PID                  pid_rate_pitch;
@@ -554,6 +556,7 @@ public:
         pid_rate_roll           (RATE_ROLL_P,     RATE_ROLL_I,      RATE_ROLL_D,    RATE_ROLL_IMAX,     RATE_ROLL_FILT_HZ,  MAIN_LOOP_SECONDS, RATE_ROLL_FF),
         pid_rate_pitch          (RATE_PITCH_P,    RATE_PITCH_I,     RATE_PITCH_D,   RATE_PITCH_IMAX,    RATE_PITCH_FILT_HZ, MAIN_LOOP_SECONDS, RATE_PITCH_FF),
         pid_rate_yaw            (RATE_YAW_P,      RATE_YAW_I,       RATE_YAW_D,     RATE_YAW_IMAX,      RATE_YAW_FILT_HZ,   MAIN_LOOP_SECONDS, RATE_YAW_FF),
+        pid_rotor_gov           (0, 0, 0, 500, 20.0, MAIN_LOOP_SECONDS),
 #else
         pid_rate_roll           (RATE_ROLL_P,     RATE_ROLL_I,      RATE_ROLL_D,    RATE_ROLL_IMAX,     RATE_ROLL_FILT_HZ,  MAIN_LOOP_SECONDS),
         pid_rate_pitch          (RATE_PITCH_P,    RATE_PITCH_I,     RATE_PITCH_D,   RATE_PITCH_IMAX,    RATE_PITCH_FILT_HZ, MAIN_LOOP_SECONDS),

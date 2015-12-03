@@ -467,6 +467,9 @@ void Copter::one_hz_loop()
 #if FRAME_CONFIG == HELI_FRAME
         // helicopters are always using motor interlock
         set_using_interlock(true);
+
+        // check if we are using governor enable on an aux switch
+        set_using_governor_switch(check_if_auxsw_mode_used(AUXSW_HELI_GOV_ENABLE));
 #else
         // check the user hasn't updated the frame orientation
         motors.set_frame_orientation(g.frame_orientation);
