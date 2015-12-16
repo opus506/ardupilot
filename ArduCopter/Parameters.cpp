@@ -805,38 +805,6 @@ const AP_Param::Info Copter::var_info[] = {
     // @User: Standard
     GGROUP(pid_accel_z, "ACCEL_Z_", AC_PID),
 
-    // @Param: H_RSC_GOV_P
-    // @DisplayName: Rotor Speed Governor P Gain
-    // @Description: Rotor speed governor P gain.  Converts the difference between desired RPM and actual RPM into a power output
-    // @Range: 0.08 0.30
-    // @Increment: 0.005
-    // @User: Standard
-
-    // @Param: H_RSC_GOV_P
-    // @DisplayName: Rotor Speed Governor I Gain
-    // @Description: Rotor speed governor I gain.  Corrects long-term difference in desired RPM vs actual RPM
-    // @Range: 0.01 0.5
-    // @Increment: 0.01
-    // @User: Standard
-
-    // @Param: H_RSC_GOV_IMAX
-    // @DisplayName: Rotor Speed Governor I Gain Maximum
-    // @Description: Rotor speed governor I gain maximum.  Constrains the maximum power that the I gain will output
-    // @Range: 0 1000
-    // @Increment: 10
-    // @Units: Percent*10
-    // @User: Standard
-
-    // @Param: H_RSC_GOV_D
-    // @DisplayName: Rotor Speed Governor D Gain
-    // @Description: Rotor speed governor D gain.  Compensates for sudden change in desired RPM vs actual RPM
-    // @Range: 0.001 0.02
-    // @Increment: 0.001
-    // @User: Standard
-#if FRAME_CONFIG == HELI_FRAME
-    GGROUP(pid_rotor_gov,     "H_RSC_GV_", AC_PID),
-#endif
-
     // P controllers
     //--------------
     // @Param: STB_RLL_P

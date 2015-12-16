@@ -11,6 +11,7 @@
 #include <AP_Common/AP_Common.h>
 #include <AP_Math/AP_Math.h>            // ArduPilot Mega Vector/Matrix math Library
 #include <RC_Channel/RC_Channel.h>      // RC Channel Library
+#include <AC_PID/AC_PID.h>              // ArduCopter PID library
 #include "AP_Motors_Class.h"
 #include "AP_MotorsHeli_RSC.h"
 
@@ -64,7 +65,8 @@ public:
     /// Constructor
     AP_MotorsHeli( uint16_t         loop_rate,
                    uint16_t         speed_hz = AP_MOTORS_HELI_SPEED_DEFAULT) :
-        AP_Motors(loop_rate, speed_hz)
+        AP_Motors(loop_rate, speed_hz),
+        _rotor_gov_pid(0,0,0, 500, 20.0, 0.025)
     {
         AP_Param::setup_object_defaults(this, var_info);
 
@@ -235,6 +237,8 @@ protected:
     AP_Int16        _rsc_power_high;            // throttle value sent to throttle servo at maximum collective pitch
     AP_Int8         _servo_test;                // sets number of cycles to test servo movement on bootup
     AP_Int16        _rsc_gov_rpm_setpoint;      // rotor speed controller governor RPM setpoint
+
+    AC_PID          _rotor_gov_pid;             // main rotor governor PID object
 
     // internal variables
     float           _rollFactor[AP_MOTORS_HELI_NUM_SWASHPLATE_SERVOS];
