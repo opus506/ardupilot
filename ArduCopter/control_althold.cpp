@@ -52,19 +52,12 @@ void Copter::althold_run()
     float target_climb_rate = get_pilot_desired_climb_rate(channel_throttle->control_in);
     target_climb_rate = constrain_float(target_climb_rate, -g.pilot_velocity_z_max, g.pilot_velocity_z_max);
 
-#if FRAME_CONFIG == HELI_FRAME
-    // helicopters are held on the ground until rotor speed runup has finished
-    bool takeoff_triggered = (ap.land_complete && (channel_throttle->control_in > get_takeoff_trigger_throttle()) && motors.rotor_runup_complete());
-#else
-    bool takeoff_triggered = (ap.land_complete && (channel_throttle->control_in > get_takeoff_trigger_throttle()));
-#endif
-
     // Alt Hold State Machine Determination
     if(!ap.auto_armed) {
         althold_state = AltHold_Disarmed;
     } else if (!motors.get_interlock()){
         althold_state = AltHold_MotorStop;
-    } else if (takeoff_state.running || takeoff_triggered){
+    } else if (takeoff_state.running || (ap.land_complete && (channel_throttle->control_in > get_takeoff_trigger_throttle()))){
         althold_state = AltHold_Takeoff;
     } else if (ap.land_complete){
         althold_state = AltHold_Landed;
