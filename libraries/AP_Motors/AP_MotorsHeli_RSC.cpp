@@ -188,8 +188,11 @@ void AP_MotorsHeli_RSC::write_rsc(int16_t servo_out)
 // calc_open_loop_power_control_output - calculates control output for use in open loop mode, or as feedforward for closed loop mode
 int16_t AP_MotorsHeli_RSC::calc_open_loop_power_control_output()
 {
+    int16_t ol_output;              // final output value
+
     // throttle output depending on estimated power demand. Output is ramped up from idle speed during rotor runup.
-    return _idle_output + (_rotor_ramp_output * ((_power_output_low - _idle_output) + (_power_output_range * _load_feedforward)));
+    ol_output =  _idle_output + (_rotor_ramp_output * ((_power_output_low - _idle_output) + (_power_output_range * _load_feedforward)));
+    return constrain_int16(ol_output, _idle_output, _power_output_high);
 }
 
 // calc_closed_loop_power_control_output - calculates control output for use in closed loop mode
@@ -198,6 +201,7 @@ int16_t AP_MotorsHeli_RSC::calc_closed_loop_power_control_output()
     static float smoothing_factor;  // used to smooth out transition from gov_enabled to disabled over 1 second
     static int16_t pid_output;      // pid closed-loop output contribution
     int16_t target_rpm;             // target rpm is ramped
+    int16_t cl_output;              // final output value
 
     target_rpm = _rotor_ramp_output * _governor_rpm_setpoint;
 
@@ -229,7 +233,8 @@ int16_t AP_MotorsHeli_RSC::calc_closed_loop_power_control_output()
     }
 
     // total control output is sum of basic open loop control output plus PID contribution
-    return calc_open_loop_power_control_output() + (smoothing_factor * pid_output);
+    cl_output = calc_open_loop_power_control_output() + (smoothing_factor * pid_output);
+    return constrain_int16(cl_output, _idle_output, _power_output_high);
 }
 
 // set_gov_enable
