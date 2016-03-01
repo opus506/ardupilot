@@ -426,12 +426,18 @@ void Plane::calc_nav_yaw_coordinated(float speed_scaler)
     if (control_mode == STABILIZE && rudder_input != 0) {
         disable_integrator = true;
     }
-    steering_control.rudder = yawController.get_servo_out(speed_scaler, disable_integrator);
 
-    // add in rudder mixing from roll
-    steering_control.rudder += channel_roll->servo_out * g.kff_rudder_mix;
-    steering_control.rudder += rudder_input;
-    steering_control.rudder = constrain_int16(steering_control.rudder, -4500, 4500);
+    if (g.rudder_only == 0) {
+
+        steering_control.rudder = yawController.get_servo_out(speed_scaler, disable_integrator);
+
+        // add in rudder mixing from roll
+        steering_control.rudder += channel_roll->servo_out * g.kff_rudder_mix;
+        steering_control.rudder += rudder_input;
+        steering_control.rudder = constrain_int16(steering_control.rudder, -4500, 4500);
+    } else {
+        steering_control.rudder = rudderController.get_servo_out(nav_controller->lateral_acceleration() ,speed_scaler, disable_integrator);
+    }
 }
 
 /*

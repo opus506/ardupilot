@@ -333,6 +333,7 @@ public:
         k_param_pidTeThrottle, // unused
         k_param_pidNavPitchAltitude, // unused
         k_param_pidWheelSteer, // unused
+        k_param_rudderController,
 
         k_param_DataFlash = 253, // Logging Group
 

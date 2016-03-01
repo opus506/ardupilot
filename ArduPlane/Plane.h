@@ -225,6 +225,7 @@ private:
     AP_RollController  rollController {ahrs, aparm, DataFlash};
     AP_PitchController pitchController {ahrs, aparm, DataFlash};
     AP_YawController   yawController {ahrs, aparm};
+    AP_RudderController rudderController {ahrs, aparm, DataFlash};
     AP_SteerController steerController {ahrs};
 
 #if CONFIG_HAL_BOARD == HAL_BOARD_SITL

@@ -1170,6 +1170,10 @@ const AP_Param::Info Plane::var_info[] = {
     // @Path: ../libraries/APM_Control/AP_SteerController.cpp
 	GOBJECT(steerController,        "STEER2SRV_",   AP_SteerController),
 
+    // @Group: RUDDER_
+    // @Path: ../libraries/APM_Control/AP_RudderController.cpp
+	GOBJECT(rudderController,          "RUDDER_",   AP_RudderController),
+
 	// variables not in the g class which contain EEPROM saved variables
 
     // @Group: COMPASS_
