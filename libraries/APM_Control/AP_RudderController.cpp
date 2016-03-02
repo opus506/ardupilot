@@ -89,7 +89,7 @@ const AP_Param::GroupInfo AP_RudderController::var_info[] = {
 	// @Increment: 0.1
     // @Units: m/s
 	// @User: User
-	AP_GROUPINFO("MINSPD",   6, AP_RudderController, _minspeed,    1.0f),
+	AP_GROUPINFO("MINSPD",   7, AP_RudderController, _minspeed,    1.0f),
 
     AP_GROUPEND
 };
