@@ -128,7 +128,7 @@ int32_t AP_RudderController::get_servo_out(float lateral_accel_demand, float sca
     }
 
     // Get body-frame rate vector (radians/sec)
-    float omega_z = _ahrs.get_gyro().z;
+    float omega_z_deg = ToDeg(_ahrs.get_gyro().z);
 
     // Calculate turn rate feedforward by first calculating rate_offset, which is assumed turning rate due to
     // plane's bank angle.  Subtract rate_offset from the desired rate to determing the desired
@@ -155,7 +155,12 @@ int32_t AP_RudderController::get_servo_out(float lateral_accel_demand, float sca
 
     _pid_info.FF = rate_hp_out * _kff * scaler;
 
-    float output = _pid_info.FF;
+
+    //Determine Rate Error
+    float rate_error = (ef_desired_rate_deg - omega_z_deg);
+    _pid_info.P = rate_error * _kp * scaler;
+
+    float output = _pid_info.FF + _pid_info.P;
 
     return output;
 }
