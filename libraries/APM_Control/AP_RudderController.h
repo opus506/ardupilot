@@ -36,13 +36,16 @@ private:
     AP_Float    _tau;
     AP_Float    _imax;
     AP_Float    _minspeed;
-    AP_Int16    _yaw_max;
+    AP_Float    _filt_hz;                   // PID Input filter frequency in Hz
+    AP_Int16    _rate_max;                  // maximum commanded roll rate in degrees/second
 
     const AP_Vehicle::FixedWing &aparm;
-    uint32_t _last_t;
-    float _last_out;
-    float _last_rate_hp_out;
-    float _last_rate_hp_in;
+    uint32_t    _last_t;                    // time of last PID update
+    float       _dt;                        // delta time for PID update in seconds
+    float       _integrator;                // integrator value
+    float       _input;                     // last input for derivative
+    float       _derivative;                // last derivative for low-pass filter
+    float       _roll_rate_error_filtered;  // stored value of roll rate error after LPF, measured in degrees/second
 
     DataFlash_Class::PID_Info _pid_info;
 

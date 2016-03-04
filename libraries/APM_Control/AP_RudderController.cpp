@@ -57,14 +57,14 @@ const AP_Param::GroupInfo AP_RudderController::var_info[] = {
     // @User: User
     AP_GROUPINFO("I",        3, AP_RudderController, _ki,        0.04f),
 
-    // @Param: YMAX
-    // @DisplayName: Maximum Yaw Rate
-    // @Description: This sets the maximum yaw rate that the controller will demand (degrees/sec). Setting it to zero disables the limit. If this value is set too low, then the yaw can't keep up with the navigation demands and the plane will start weaving. If it is set too high (or disabled by setting to zero) then rudder will get large inputs at the start of turns. A limit of 5 degrees/sec is a good default.
+    // @Param: RMAX
+    // @DisplayName: Maximum Roll Rate
+    // @Description: This sets the maximum roll rate that the controller will demand (degrees/sec). Setting it to zero disables the limit. If this value is set too low, then the roll can't keep up with the navigation demands and the plane will start weaving. If it is set too high (or disabled by setting to zero) then rudder will get large inputs at the start of turns. A limit of 5 degrees/sec is a good default.
     // @Range: 0 25
     // @Units: degrees/second
     // @Increment: 1
     // @User: Advanced
-    AP_GROUPINFO("YMAX",   4, AP_RudderController, _yaw_max,       0),
+    AP_GROUPINFO("RMAX",   4, AP_RudderController, _rate_max,       0),
 
     // @Param: IMAX
     // @DisplayName: Integrator limit
@@ -82,14 +82,11 @@ const AP_Param::GroupInfo AP_RudderController::var_info[] = {
     // @User: User
     AP_GROUPINFO("FF",        6, AP_RudderController, _kff,          0.2),
 
-	// @Param: MINSPD
-	// @DisplayName: Minimum speed
-	// @Description: This is the minimum assumed ground speed in meters/second for rudder control. Having a minimum speed prevents oscillations when the vehicle first starts moving. The vehicle can still fly slower than this limit, but the rudder calculations will be done based on this minimum speed.
-	// @Range: 0 5
-	// @Increment: 0.1
-    // @Units: m/s
-	// @User: User
-	AP_GROUPINFO("MINSPD",   7, AP_RudderController, _minspeed,    1.0f),
+    // @Param: FILT_HZ
+    // @DisplayName: PID Input filter frequency in Hz
+    // @Description: Input filter frequency in Hz
+    // @Unit: Hz
+    AP_GROUPINFO("FILT_HZ",     7, AP_RudderController, _filt_hz, 10),
 
     AP_GROUPEND
 };
@@ -97,70 +94,53 @@ const AP_Param::GroupInfo AP_RudderController::var_info[] = {
 int32_t AP_RudderController::get_servo_out(float lateral_accel_demand, float scaler, bool disable_integrator)
 {
     uint32_t tnow = AP_HAL::millis();
-    uint32_t dt = tnow - _last_t;
-    if (_last_t == 0 || dt > 1000) {
-        dt = 0;
+    _dt = (float)(tnow - _last_t)/1000.0;
+    if (_last_t == 0 || _dt > 1.0) {
+        _dt = 0;
     }
     _last_t = tnow;
 
-    // get ground speed from AHRS
-    float ground_speed = _ahrs.groundspeed();
-    if (ground_speed < _minspeed) {
-        // assume a minimum speed. This stops osciallations when first starting to move
-        ground_speed = _minspeed;
-    }
-    // Calculate the desired earth-frame turn rate given lateral_accel_demand and ground speed
-    float ef_desired_rate_deg = ToDeg(lateral_accel_demand / ground_speed);
-    _pid_info.desired = ef_desired_rate_deg;
+    // calculate low-pass filter alpha
+    float rc = 1/(M_2PI_F*_filt_hz);
+    float alpha = _dt / (_dt + rc);
 
-    float airspeed;
-    int16_t aspd_min = aparm.airspeed_min;
-    if (aspd_min < 1) {
-        aspd_min = 1;
-    }
-    if (!_ahrs.airspeed_estimate(&airspeed)) {
-    // If no airspeed available use average of min and max
-        airspeed = 0.5f*(float(aspd_min) + float(aparm.airspeed_max));
-    }
-    if (airspeed < aspd_min) {
-        // assume a minimum airspeed. This stops osciallations when first starting to move
-        airspeed = aspd_min;
+    // Calculate nav_roll_deg using a maximum bank angle of 45 degrees.
+    float nav_roll_deg;
+    nav_roll_deg = cosf(_ahrs.pitch)*degrees(atanf(lateral_accel_demand/9.81));
+    nav_roll_deg = constrain_float(nav_roll_deg, -45, 45);
+    float roll_angle_deg = ToDeg(_ahrs.roll);
+    float roll_error_deg = nav_roll_deg - roll_angle_deg;
+
+    float roll_rate_demand_deg = roll_error_deg / _tau;
+    // Limit the demanded roll rate
+    if (_rate_max && roll_rate_demand_deg < -_rate_max) {
+        roll_rate_demand_deg = - _rate_max;
+    } else if (_rate_max && roll_rate_demand_deg > _rate_max) {
+        roll_rate_demand_deg = _rate_max;
     }
 
-    // Get body-frame rate vector (radians/sec)
-    float omega_z_deg = ToDeg(_ahrs.get_gyro().z);
+    float roll_rate_deg = ToDeg(_ahrs.get_gyro().x);
+    float roll_rate_error_deg = roll_rate_demand_deg - roll_rate_deg;
+    float roll_rate_filter_change = (roll_rate_error_deg - _roll_rate_error_filtered) * alpha;
+    float derivative = roll_rate_filter_change / _dt;
+    _roll_rate_error_filtered += roll_rate_filter_change;
 
-    // Calculate turn rate feedforward by first calculating rate_offset, which is assumed turning rate due to
-    // plane's bank angle.  Subtract rate_offset from the desired rate to determing the desired
-    // turning rate due to yaw.
-    float bank_angle = _ahrs.roll;
-    float rate_offset_deg;
-    // limit bank angle between +- 80 deg if right way up
-    if (fabsf(bank_angle) < 1.5707964f)	{
-        bank_angle = constrain_float(bank_angle,-1.3962634f,1.3962634f);
+    _pid_info.desired = roll_rate_demand_deg;
+    _pid_info.FF = roll_rate_demand_deg * _kff * scaler;
+    _pid_info.P = _roll_rate_error_filtered * _kp * scaler;
+    _pid_info.D = derivative * _kd * scaler;
+
+    if(!is_zero(_ki) && !is_zero(_dt)) {
+        _integrator += ((float)roll_rate_error_deg * _ki) * _dt * scaler;
+        if (_integrator < -_imax) {
+            _integrator = -_imax;
+        } else if (_integrator > _imax) {
+            _integrator = _imax;
+        }
+        _pid_info.I = _integrator;
     }
-    rate_offset_deg = ToDeg((GRAVITY_MSS / airspeed) * tanf(bank_angle) * cosf(bank_angle));
 
-    // Subtract the roll-angle turn component of rate from the measured rate
-    // to calculate the rate relative to the turn requirement in degrees/sec
-    float rate_hp_in = ef_desired_rate_deg - rate_offset_deg;
-    
-    // Apply a high-pass filter to the rate to washout any steady state error
-    // due to bias errors in rate_offset_deg
-    // Use a cut-off frequency of omega = 0.2 rad/sec
-    // Could make this adjustable by replacing 0.9960080 with (1 - omega * dt)
-    float rate_hp_out = 0.9960080f * _last_rate_hp_out + rate_hp_in - _last_rate_hp_in;
-    _last_rate_hp_out = rate_hp_out;
-    _last_rate_hp_in = rate_hp_in;
-
-    _pid_info.FF = rate_hp_out * _kff * scaler;
-
-
-    //Determine Rate Error
-    float rate_error = (ef_desired_rate_deg - omega_z_deg);
-    _pid_info.P = rate_error * _kp * scaler;
-
-    float output = _pid_info.FF + _pid_info.P;
+    float output = _pid_info.FF + _pid_info.P + _pid_info.I + _pid_info.D;
 
     return output;
 }
