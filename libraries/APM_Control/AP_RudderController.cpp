@@ -111,27 +111,27 @@ int32_t AP_RudderController::get_servo_out(float lateral_accel_demand, float sca
     float roll_angle_deg = ToDeg(_ahrs.roll);
     float roll_error_deg = nav_roll_deg - roll_angle_deg;
 
-    float roll_rate_demand_deg = roll_error_deg / _tau;
-    // Limit the demanded roll rate
-    if (_rate_max && roll_rate_demand_deg < -_rate_max) {
-        roll_rate_demand_deg = - _rate_max;
-    } else if (_rate_max && roll_rate_demand_deg > _rate_max) {
-        roll_rate_demand_deg = _rate_max;
+    float yaw_rate_demand_deg = roll_error_deg / _tau;
+    // Limit the demanded yaw rate
+    if (_rate_max && yaw_rate_demand_deg < -_rate_max) {
+        yaw_rate_demand_deg = - _rate_max;
+    } else if (_rate_max && yaw_rate_demand_deg > _rate_max) {
+        yaw_rate_demand_deg = _rate_max;
     }
 
-    float roll_rate_deg = ToDeg(_ahrs.get_gyro().x);
-    float roll_rate_error_deg = roll_rate_demand_deg - roll_rate_deg;
-    float roll_rate_filter_change = (roll_rate_error_deg - _roll_rate_error_filtered) * alpha;
-    float derivative = roll_rate_filter_change / _dt;
-    _roll_rate_error_filtered += roll_rate_filter_change;
+    float yaw_rate_deg = ToDeg(_ahrs.get_gyro().z);
+    float yaw_rate_error_deg = yaw_rate_demand_deg - yaw_rate_deg;
+    float yaw_rate_filter_change = (yaw_rate_error_deg - _yaw_rate_error_filtered) * alpha;
+    float derivative = yaw_rate_filter_change / _dt;
+    _yaw_rate_error_filtered += yaw_rate_filter_change;
 
-    _pid_info.desired = roll_rate_demand_deg;
-    _pid_info.FF = roll_rate_demand_deg * _kff * scaler;
-    _pid_info.P = _roll_rate_error_filtered * _kp * scaler;
+    _pid_info.desired = yaw_rate_demand_deg;
+    _pid_info.FF = yaw_rate_demand_deg * _kff * scaler;
+    _pid_info.P = _yaw_rate_error_filtered * _kp * scaler;
     _pid_info.D = derivative * _kd * scaler;
 
     if(!is_zero(_ki) && !is_zero(_dt)) {
-        _integrator += ((float)roll_rate_error_deg * _ki) * _dt * scaler;
+        _integrator += ((float)yaw_rate_error_deg * _ki) * _dt * scaler;
         if (_integrator < -_imax) {
             _integrator = -_imax;
         } else if (_integrator > _imax) {

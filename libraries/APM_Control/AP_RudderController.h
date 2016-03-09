@@ -45,7 +45,7 @@ private:
     float       _integrator;                // integrator value
     float       _input;                     // last input for derivative
     float       _derivative;                // last derivative for low-pass filter
-    float       _roll_rate_error_filtered;  // stored value of roll rate error after LPF, measured in degrees/second
+    float       _yaw_rate_error_filtered;  // stored value of roll rate error after LPF, measured in degrees/second
 
     DataFlash_Class::PID_Info _pid_info;
 
