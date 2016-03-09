@@ -119,7 +119,7 @@ int32_t AP_RudderController::get_servo_out(float lateral_accel_demand, float sca
         roll_rate_demand_deg = _rate_max;
     }
 
-    float yaw_rate_demand = roll_rate_demand_deg;
+    float yaw_rate_demand_deg = roll_rate_demand_deg;
 
     float yaw_rate_deg = ToDeg(_ahrs.get_gyro().z);
     float yaw_rate_error_deg = yaw_rate_demand_deg - yaw_rate_deg;
