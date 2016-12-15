@@ -21,6 +21,10 @@
 #define AP_MOTORS_HELI_SINGLE_SWASH_CCPM                       0
 #define AP_MOTORS_HELI_SINGLE_SWASH_H1                         1
 
+// swash direction definitions
+#define AP_MOTORS_HELI_SINGLE_SWASH_DIRECTION_LEADING          1
+#define AP_MOTORS_HELI_SINGLE_SWASH_DIRECTION_TRAILING         2
+
 // tail types
 #define AP_MOTORS_HELI_SINGLE_TAILTYPE_SERVO                   0
 #define AP_MOTORS_HELI_SINGLE_TAILTYPE_SERVO_EXTGYRO           1
@@ -153,6 +157,7 @@ protected:
     AP_Float        _collective_yaw_effect;     // Feed-forward compensation to automatically add rudder input when collective pitch is increased. Can be positive or negative depending on mechanics.
     AP_Int8         _flybar_mode;               // Flybar present or not.  Affects attitude controller used during ACRO flight mode
     AP_Int16        _direct_drive_tailspeed;    // Direct Drive VarPitch Tail ESC speed (0 ~ 1000)
+	AP_Int8	        _swash_direction;			// Swash Control Direction - Used to set the rotor head control direction. 1 for Leading Edge Control. 2 for Trailing Edge Control
     RC_Channel      _swash_servo_1;             // swash plate servo #1
     RC_Channel      _swash_servo_2;             // swash plate servo #2
     RC_Channel      _swash_servo_3;             // swash plate servo #3
