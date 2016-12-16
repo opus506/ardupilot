@@ -1034,6 +1034,13 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @Values: 0:NotEnforced,1:Enforced
     // @User: Advanced
     AP_GROUPINFO("SYSID_ENFORCE", 11, ParametersG2, sysid_enforce, 0),
+
+    // @Param: LAND_DETECT_CHK
+    // @DisplayName: Land Detector Checks
+    // @Description: Enable extra checks for the landing detector.
+    // @Values: 1:Standard,2:Check Interlock
+    // @User: Standard
+    AP_GROUPINFO("LAND_DETECT_CHK", 15, ParametersG2, land_detect_checks, LandDetectCheckStandard),
     
     AP_GROUPEND
 };

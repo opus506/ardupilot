@@ -72,7 +72,12 @@ void Copter::update_land_detector()
         // if we have a healthy rangefinder only allow landing detection below 2 meters
         bool rangefinder_check = (!rangefinder_alt_ok() || rangefinder_state.alt_cm_filt.get() < LAND_RANGEFINDER_MIN_ALT_CM);
 
-        if (motor_at_lower_limit && accel_stationary && descent_rate_low && rangefinder_check) {
+        // check extra landing detector checks
+        // there's an issue here if somebody has this param set to something other than these two options
+        bool extra_checks = ((g2.land_detect_checks == LandDetectCheckStandard)
+                            ||((g2.land_detect_checks == LandDetectCheckInterlock) && !motors.get_interlock()) );
+
+        if (motor_at_lower_limit && accel_stationary && descent_rate_low && rangefinder_check && extra_checks) {
             // landed criteria met - increment the counter and check if we've triggered
             if( land_detector_count < ((float)LAND_DETECTOR_TRIGGER_SEC)*scheduler.get_loop_rate_hz()) {
                 land_detector_count++;
@@ -80,7 +85,7 @@ void Copter::update_land_detector()
                 set_land_complete(true);
             }
         } else {
-            // we've sensed movement up or down so reset land_detector
+            // we've failed a check so reset land_detector
             land_detector_count = 0;
         }
     }

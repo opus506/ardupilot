@@ -576,6 +576,9 @@ public:
     // acro exponent parameters
     AP_Float acro_y_expo;
     AP_Float acro_thr_mid;
+
+    // control the operation of auto-disarm during auto-landing procedures.
+    AP_Int8 land_detect_checks;
 };
 
 extern const AP_Param::Info        var_info[];

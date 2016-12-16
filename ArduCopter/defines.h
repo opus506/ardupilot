@@ -276,6 +276,11 @@ enum LandStateType {
     LandStateType_Descending = 1
 };
 
+enum LandDetectCheckType {
+    LandDetectCheckStandard = 1,
+    LandDetectCheckInterlock = 2,
+};
+
 // bit options for DEV_OPTIONS parameter
 enum DevOptions {
     DevOptionADSBMAVLink = 1,
